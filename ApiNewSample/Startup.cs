@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
-using ApiSample.Data;
-using ApiSample.Services;
-using AutoMapper;
+using ApiNewSample.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace ApiSample
+namespace ApiNewSample
 {
     public class Startup
     {
@@ -28,18 +25,10 @@ namespace ApiSample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<ICompanyService, CompanyService>();
-
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
-            services.AddDbContext<MyDbContext>(options =>
-            {
-                options.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=api200916a;Trusted_Connection=True;MultipleActiveResultSets=true");
+            services.AddDbContext<RoutineDbContext>(options => {
+                options.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=api200928a;Trusted_Connection=True;MultipleActiveResultSets=true");
             });
-
-
-            services.AddControllers()
-                .AddXmlDataContractSerializerFormatters();
+            services.AddControllers();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
