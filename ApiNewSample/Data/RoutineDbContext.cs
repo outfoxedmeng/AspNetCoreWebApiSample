@@ -1,4 +1,5 @@
-﻿using Ardalis.EFCore.Extensions;
+﻿using ApiNewSample.Entities;
+using Ardalis.EFCore.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,17 @@ namespace ApiNewSample.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyAllConfigurationsFromCurrentAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyAllConfigurationsFromCurrentAssembly(Assembly.GetExecutingAssembly());
+            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+            {
+                entity.SetTableName(entity.DisplayName());
+            }
         }
 
+
+        public DbSet<Company> Companies { get; set; }
+
+        public DbSet<Employee> Employees { get; set; }
     }
 }

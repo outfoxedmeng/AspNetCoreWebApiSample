@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ApiNewSample.Data;
+using ApiNewSample.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -25,10 +26,13 @@ namespace ApiNewSample
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<RoutineDbContext>(options => {
+            services.AddDbContext<RoutineDbContext>(options =>
+            {
                 options.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=api200928a;Trusted_Connection=True;MultipleActiveResultSets=true");
             });
             services.AddControllers();
+
+            services.AddScoped<ICompanyRepository, CompanyRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
