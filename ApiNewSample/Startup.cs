@@ -28,7 +28,9 @@ namespace ApiNewSample
         {
             services.AddDbContext<RoutineDbContext>(options =>
             {
-                options.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=api200928a;Trusted_Connection=True;MultipleActiveResultSets=true");
+                options
+                //.UseLoggerFactory(MyLoggerFactory)
+                .UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=api200928a;Trusted_Connection=True;MultipleActiveResultSets=true");
             });
             services.AddControllers();
 
@@ -51,5 +53,16 @@ namespace ApiNewSample
                 endpoints.MapControllers();
             });
         }
+
+        public static readonly ILoggerFactory MyLoggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder.AddFilter((category, level) =>
+                category == DbLoggerCategory.Database.Command.Name
+                && level == LogLevel.Information
+            )
+            .AddConsole();
+
+        });
+
     }
 }
