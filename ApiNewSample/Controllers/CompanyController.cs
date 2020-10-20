@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApiNewSample.Dtos;
 using ApiNewSample.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,17 +15,32 @@ namespace ApiNewSample.Controllers
     public class CompanyController : ControllerBase
     {
         private readonly ICompanyRepository _repository;
+        private readonly IMapper _mapper;
 
-        public CompanyController(ICompanyRepository repository)
+        public CompanyController(ICompanyRepository repository, IMapper mapper)
         {
-            _repository = repository;
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
         [HttpGet]
-        public async Task<IActionResult> GetCompanies()
+        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies()
         {
             var companies = await _repository.GetCompaniesAsync();
+            var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(companies);
 
-            return Ok(companies);
+            return Ok(companyDtos);
+        }
+
+        [HttpGet("{companyId}")]
+        public async Task<IActionResult> GetCompany(int companyId)
+        {
+            var company = await _repository.GetCompanyAsync(companyId);
+
+            if (company == null)
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<CompanyDto>(company));
         }
     }
 }

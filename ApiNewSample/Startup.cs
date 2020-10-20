@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using ApiNewSample.Data;
 using ApiNewSample.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +34,16 @@ namespace ApiNewSample
                 //.UseLoggerFactory(MyLoggerFactory)
                 .UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=api200928a;Trusted_Connection=True;MultipleActiveResultSets=true");
             });
-            services.AddControllers();
+
+            services.AddControllers(config =>
+            {
+                config.ReturnHttpNotAcceptable = true;//p8:若response没有对应的formatter，返回406 NotAcceptable
+            })
+                .AddXmlDataContractSerializerFormatters();//P8:内容协商
+
+            //P10
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 
             services.AddScoped<ICompanyRepository, CompanyRepository>();
         }
