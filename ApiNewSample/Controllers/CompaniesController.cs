@@ -10,14 +10,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApiNewSample.Controllers
 {
-    [Route("api/Company")]
+    [Route("api/companies")]
     [ApiController]
-    public class CompanyController : ControllerBase
+    public class CompaniesController : ControllerBase
     {
         private readonly ICompanyRepository _repository;
         private readonly IMapper _mapper;
 
-        public CompanyController(ICompanyRepository repository, IMapper mapper)
+        public CompaniesController(ICompanyRepository repository, IMapper mapper)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

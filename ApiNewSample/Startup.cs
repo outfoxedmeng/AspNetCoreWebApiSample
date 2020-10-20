@@ -8,6 +8,7 @@ using ApiNewSample.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -53,6 +54,19 @@ namespace ApiNewSample
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler(appBuilder =>
+                {
+                    appBuilder.Run(async httpcontext =>
+                    {
+                        var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
+                        logger.LogError("Error:{error}", "~~~~~~~~~~~~");
+                        httpcontext.Response.StatusCode = 500;
+                        await httpcontext.Response.WriteAsync("Unexpected Error!");
+                    });
+                });
             }
 
             app.UseRouting();
