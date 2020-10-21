@@ -1,4 +1,5 @@
-﻿using ApiNewSample.Entities;
+﻿using ApiNewSample.DtoParameters;
+using ApiNewSample.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace ApiNewSample.Services
 {
     public interface ICompanyRepository
     {
-        Task<IEnumerable<Company>> GetCompaniesAsync();
+        Task<IEnumerable<Company>> GetCompaniesAsync(CompanyDtoParameters parameters);
 
         Task<Company> GetCompanyAsync(int componyId);
 
@@ -23,7 +24,8 @@ namespace ApiNewSample.Services
         Task<bool> CompanyExistsAsync(int companyId);
 
 
-        Task<IEnumerable<Employee>> GetEmployeesAsync(int companyId);
+        Task<IEnumerable<Employee>> GetEmployeesAsync(int companyId, string genderDisplay, //这里要跟dto一致，而不是与Entity P18
+            string q);
 
         Task<Employee> GetEmployeeAsync(int companyId, int employeeId);
 

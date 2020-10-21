@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApiNewSample.DtoParameters;
 using ApiNewSample.Dtos;
 using ApiNewSample.Services;
 using AutoMapper;
@@ -23,9 +24,12 @@ namespace ApiNewSample.Controllers
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies()
+        [HttpHead]//一个方法可以同时支持Get与Head，相同的是，方法都会正常执行；不同的是，HttpHead不用传输body内容。
+        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies(
+            [FromQuery] CompanyDtoParameters parameters//复杂类型，默认从body绑定，因此需要手动指定从query绑定，否则415错误
+            )
         {
-            var companies = await _repository.GetCompaniesAsync();
+            var companies = await _repository.GetCompaniesAsync(parameters);
             var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(companies);
 
             return Ok(companyDtos);

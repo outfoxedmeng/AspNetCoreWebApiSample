@@ -26,6 +26,11 @@ namespace ApiNewSample.Data
             }
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.EnableSensitiveDataLogging(true);
+        }
 
         public DbSet<Company> Companies { get; set; }
 

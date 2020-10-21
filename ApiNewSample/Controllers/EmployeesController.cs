@@ -23,14 +23,14 @@ namespace ApiNewSample.Controllers
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployees(int companyId)
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployees(int companyId,string genderDisplay,string q)
         {
             //检测父关系数据是否存在  P13
             if (!await _repository.CompanyExistsAsync(companyId))
             {
                 return NotFound();
             }
-            var employees = await _repository.GetEmployeesAsync(companyId);
+            var employees = await _repository.GetEmployeesAsync(companyId,genderDisplay,q);
             var employeeDtos = _mapper.Map<IEnumerable<EmployeeDto>>(employees);
             return Ok(employeeDtos);
         }

@@ -1,4 +1,5 @@
 ﻿using ApiNewSample.Data;
+using ApiNewSample.DtoParameters;
 using ApiNewSample.Entities;
 using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.EntityFrameworkCore;
@@ -17,9 +18,27 @@ namespace ApiNewSample.Services
         {
             _dbContext = dbContext;
         }
-        public async Task<IEnumerable<Company>> GetCompaniesAsync()
+        public async Task<IEnumerable<Company>> GetCompaniesAsync(CompanyDtoParameters parameters)
         {
-            var res = await _dbContext.Companies.ToListAsync();
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+            var query = _dbContext.Companies.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(parameters.Name))
+            {
+                query = query.Where(x => x.Name.Contains(parameters.Name.Trim()));
+            }
+            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
+            {
+                var term = parameters.SearchTerm.Trim();
+                query = query.Where(x => x.Product.Contains(term)
+                                        || x.Industry.Contains(term));
+
+            }
+
+            var res = await query.ToListAsync();
             return res;
 
         }
@@ -95,11 +114,30 @@ namespace ApiNewSample.Services
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Employee>> GetEmployeesAsync(int companyId)
+        public async Task<IEnumerable<Employee>> GetEmployeesAsync(
+            int companyId,
+            string genderDisplay, //这里要跟dto一致，而不是与Entity P18
+            string q)
         {
-            return await _dbContext.Employees
-                .Where(_ => _.CompanyId == companyId)
-                .ToListAsync();
+            var query = _dbContext.Employees.AsQueryable<Employee>();
+            query = query.Where(_ => _.CompanyId == companyId);
+
+            if (!string.IsNullOrWhiteSpace(genderDisplay))
+            {
+                genderDisplay = genderDisplay.Trim();
+                var gender = Enum.Parse<Gender>(genderDisplay, true);
+                query = query.Where(_ => _.Gender == gender);
+            }
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                q = q.Trim();
+
+                query = query.Where(_ => _.EmployeeNo.Contains(q) ||
+                                         _.FirstName.Contains(q) ||
+                                         _.LastName.Contains(q));
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<bool> SaveChangesAsync()

@@ -61,8 +61,8 @@ namespace ApiNewSample
                 {
                     appBuilder.Run(async httpcontext =>
                     {
-                        var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
-                        logger.LogError("Error:{error}", "~~~~~~~~~~~~");
+                        //var logger = app.ApplicationServices.GetRequiredService<ILogger<Startup>>();
+                        //logger.LogError("Error:{error}", "~~~~~~~~~~~~");
                         httpcontext.Response.StatusCode = 500;
                         await httpcontext.Response.WriteAsync("Unexpected Error!");
                     });
