@@ -32,6 +32,9 @@ namespace ApiNewSample.MappingProfile
                         opt.MapFrom(src => Enum.GetName(typeof(Gender), src.Gender));
                     }
                 );
+
+            CreateMap<EmployeeCreateDto, Employee>();
+
         }
     }
 }
