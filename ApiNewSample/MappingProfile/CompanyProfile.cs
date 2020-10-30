@@ -17,6 +17,8 @@ namespace ApiNewSample.MappingProfile
                      d => d.CompanyName,
                      opt => opt.MapFrom(r => r.Name)
                );
+
+            CreateMap<CompanyAddDto, Company>();
         }
 
     }

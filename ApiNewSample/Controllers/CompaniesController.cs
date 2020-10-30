@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiNewSample.DtoParameters;
 using ApiNewSample.Dtos;
+using ApiNewSample.Entities;
 using ApiNewSample.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -35,7 +36,7 @@ namespace ApiNewSample.Controllers
             return Ok(companyDtos);
         }
 
-        [HttpGet("{companyId}")]
+        [HttpGet("{companyId}", Name = nameof(GetCompany))]
         public async Task<IActionResult> GetCompany(int companyId)
         {
             var company = await _repository.GetCompanyAsync(companyId);
@@ -45,6 +46,19 @@ namespace ApiNewSample.Controllers
                 return NotFound();
             }
             return Ok(_mapper.Map<CompanyDto>(company));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<CompanyDto>> AddCompany(CompanyAddDto addDto)
+        {
+            var company = _mapper.Map<Company>(addDto);
+
+            _repository.AddCompany(company);
+            await _repository.SaveChangesAsync();
+
+            var dto = _mapper.Map<CompanyDto>(company);
+
+            return CreatedAtRoute(nameof(GetCompany), new { companyId = company.Id }, dto);
         }
     }
 }
