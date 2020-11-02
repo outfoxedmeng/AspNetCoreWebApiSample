@@ -15,5 +15,9 @@ namespace ApiNewSample.Dtos
         public string Introduction { get; set; }
 
         public DateTime? BankruptTime { get; set; }
+
+        //同时添加父子资源
+        //属性名字为Employees，因此不需要额外的映射配置
+        public ICollection<EmployeeCreateDto> Employees { get; set; } = new List<EmployeeCreateDto>();
     }
 }
